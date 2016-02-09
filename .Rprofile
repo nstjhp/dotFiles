@@ -21,7 +21,7 @@ options(error=utils::recover)
 
 ## Don't ask me for my CRAN mirror every time
 r = getOption("repos")             
-r["CRAN"] = "http://cran.rstudio.com/"
+r["CRAN"] = "https://cran.rstudio.com/"
 options(repos = r)
 rm(r)
 
