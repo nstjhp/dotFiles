@@ -203,11 +203,11 @@
       panel.background = element_rect(fill = "grey92", colour = NA),
       panel.grid.minor = element_line(colour = "grey98", size = 0.25),
       strip.background = element_rect(fill = "grey85", colour = NA),
-      strip.text.y = element_text(angle = -90, colour = "grey25",
-        size = rel(1.2)),
       strip.text.x = element_text(angle = 0, colour = "grey25",
-        size = rel(1.2)),
-      plot.margin = grid::unit(c(0.5, 0.4, 0.2, 0.02), "lines")
+        size = rel(1.2), margin = margin(t = 3, b = 3)),
+      strip.text.y = element_text(angle = -90, colour = "grey25",
+        size = rel(1.2), margin = margin(l = 3, r = 3)),
+      plot.margin = grid::unit(c(0.5, 0.4, 0.2, 0.2), "lines")
     )
 }
 
@@ -232,11 +232,11 @@
       panel.grid.major = element_line(colour = "grey90", size = 0.2),
       panel.grid.minor = element_line(colour = "grey98", size = 0.5),
       strip.background = element_rect(fill = "grey85", colour = "grey80"),
-      strip.text.y = element_text(angle = -90, colour = "grey25",
-        size = rel(1.2)),
       strip.text.x = element_text(angle = 0, colour = "grey25",
-        size = rel(1.2)),
-      plot.margin = grid::unit(c(0.5, 0.4, 0.0, 0.02), "lines")
+        size = rel(1.2), margin = margin(t = 3, b = 3)),
+      strip.text.y = element_text(angle = -90, colour = "grey25",
+        size = rel(1.2), margin = margin(l = 3, r = 3)),
+      plot.margin = grid::unit(c(0.5, 0.4, 0.2, 0.2), "lines")
     )
 }
 
