@@ -1,0 +1,133 @@
+## Install from repos
+sudo apt-get update
+sudo apt-get dist-upgrade
+# Fortran compiler
+sudo apt-get install gfortran
+# Curl
+sudo apt-get install curl
+# Pip for python (package manager) ## If this doesn't work just dl the file linked from the pip website
+wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | sudo python2.7
+curl --silent --show-error --retry 5 https://raw.github.com/pypa/pip/master/contrib/get-pip.py | sudo python2.7
+cmake
+sudo apt-get install apt-file ## then do sudo apt-file update and use as apt-file search filename
+swig
+libatlas libzmq-dev libsuitesparse-dev
+# Things for ipython (install from apt-get)
+python-nose python-tornado sphinx-common libsphinxbase-dev python-sphinx python-jinja2
+
+emacs (aim for v25 at least)
+git
+vim ## Needed this as for some reason the in-built vi/vim produced ABCD for arrow-keys
+mplayer
+imagemagick
+
+## better to dl R from CRAN repo using the Ubuntu deb file
+## Build from source ## Or can consider downloading Ubuntu .deb from CRAN repo
+R ## ./configure  --enable-R-shlib
+## Depends: libxt-dev, libboost-dev, libx11-dev, libreadline-dev, g++, libc++-dev OR maybe libcppunit-dev, libgtk2.0-dev, mesa-common-dev, libpq-dev libcurl4-openssl-dev, libglu1-mesa-dev, libxml2-dev
+## then R> install.packages(c("ggplot2","plyr","formatR", "deSolve", "shiny", "devtools", "knitr", "dplyr","reshape2","ggvis"), dependencies=TRUE)
+## will cover a lot of good packages
+
+## Install TeXLive
+Download tar file
+tar -xzf install-tl-unx.tar.gz
+cd into directory
+sudo ./install-tl  -> type i 
+add to $PATH
+check with echo $PATH in new terminal, or source ~/.bashrc in current terminal
+
+## Things to install with pip
+ipython, virtualenv
+
+## Things to install in emacs
+rainbow-mode, rainbow-delimeters, tabbar, adaptive-wrap, hlinum, highlight-indentation
+
+## Things to change
+Make terminal profile
+Install Monaco-Linux.ttf and MonacoB2-Bold.otf
+Play with .bashrc, .vimrc, .emacs
+
+## Chinese keyboards
+Install fcitx and many other similarly prefixed packages including: m17n, googlepinyin, wubi.
+May need to uninstall ibus as well. Initially also install language packs in keyboard settings and possibly look into input method (didn't appear to help Linux Mint 19.1). Restarting with fcitx selected there and all these keyboards that are available can be selected in the fcitx configuration preferences.
+CTRL+Shift+SPACE to see the options (CTRL+SPACE to switch between current and previous keyboards)
+
+## To restore a Linux live USB
+Restoring your USB key to its original state using Linux:
+
+A. First we need to delete the old partitions that remain on the USB key.
+
+Open a terminal and type sudo su
+Type fdisk -l and note your USB drive letter.
+Type fdisk /dev/sdx (replacing x with your drive letter)
+Type d to proceed to delete a partition
+Type 1 to select the 1st partition and press enter
+Type d to proceed to delete another partition (fdisk should automatically select the second partition)
+B. Next we need to create the new partition.
+
+Type n to make a new partition
+Type p to make this partition primary and press enter
+Type 1 to make this the first partition and then press enter
+Press enter to accept the default first cylinder
+Press enter again to accept the default last cylinder
+Type w to write the new partition information to the USB key
+Type umount /dev/sdx1 (replacing x with your drive letter)
+C. The last step is to create the fat filesystem.
+
+Type mkfs.vfat -F 32 /dev/sdx1 (replacing x with your USB key drive letter)
+That's it, you should now have a restored USB key with a single fat 32 partition that can be read from any computer.
+##################
+##################
+
+## Cinnamon spices to install
+http://cinnamon-spices.linuxmint.com/applets/view/116
+## this makes a workspace grid. Put dl'ed unzipped folder in ~/.local/share/cinnamon/applets then restart cinnamon (alt-f2 and type r) go to setting -> applets & right click 'workspace grid 2D' add to panel. Right click in panel and select 'configure...' to alter # of workspaces.
+
+## Set up ssh 
+ssh-keygen -t rsa
+ssh-add ~/.ssh/id_rsa
+ssh-add -l
+cat ~/.ssh/id_rsa.pub (put this in bitbucket)
+
+## Sudo without password
+sudo visudo
+add a line that looks like <username> ALL=NOPASSWD: ALL at the bottom of file
+
+## To get 2nd work screen right size run this
+xrandr --output VGA1 --mode 1680x1050
+
+## Command in vi to search for pattern (article{lettersDigits)and then lowercase the thing captured
+:%s/article{\([A-Z][a-z]*[0-9]*\)/\L&/c
+## Need to learn this: match globally year the do the sub
+:g/year/s/$/}/
+## Can do like this to delete all lines matching pattern
+:g/pattern (put /d at the end to see lines to be deleted)
+
+## If you don't want your history saved you can do
+export HISTFILE=/dev/null
+
+## Downsampling images with ImageMagick
+convert ~/Desktop/OSR.jpg -resize 25% OSR-low.jpg ## Input (final quality) output
+convert jacaranda.jpg -resize 50% jacaranda-low.jpg
+convert IMG_4755.JPG -resize 45% rosette-low.jpg
+convert IMG_4797.JPG -resize 45% mainStem-low.jpg 
+convert IMG_4793.JPG -resize 45% brancing-low.jpg 
+convert -density 300 loops.pdf[5] -quality 100 ~/Dropbox/CV/postdocCVs/Fellowships/network.png
+
+## convert from jpeg to pdf
+convert IMG_4434.JPG proofOfWorkContract.pdf
+convert -rotate 90 *.JPG formPDU1pages1-4.pdf
+
+## Firefox extensions
+Adblock Plus
+ColorfulTabs
+colorPicker
+ReloadEvery
+Hide Caption Titlebar Plus
+Classic Theme Restorer (Customize UI)
+
+## Firefox allow backspace to go back
+open an about:config tab
+Set "browser.backspace_action" to 0
+Set browser.search.showOneOffButtons to false ## Restore old search style bar
+Set browser.showQuitWarning to true ## kinda obvious, dunno why it's not default...!!!
