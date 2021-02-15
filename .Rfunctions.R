@@ -191,9 +191,10 @@
     theme(
       axis.text = element_text(size = rel(1.2), colour = "grey50"),
       axis.ticks = element_line(colour = "grey75"),
-      axis.title.x = element_text(size = rel(1.2), colour = "grey25"),
+      axis.title.x = element_text(size = rel(1.2), colour = "grey25", 
+                                  margin=margin(10,0,0,0)),## update for 2.0.0
       axis.title.y = element_text(size = rel(1.2), colour =
-        "grey25", angle=90),
+        "grey25", angle=90, margin=margin(0,10,0,0)),## update for 2.0.0
       legend.margin = grid::unit(0.1, "cm"),
       legend.key = element_rect(fill = "grey93", colour = "white"),
       legend.text = element_text(size = rel(1.0), face =
@@ -207,7 +208,7 @@
         size = rel(1.2), margin = margin(t = 3, b = 3)),
       strip.text.y = element_text(angle = -90, colour = "grey25",
         size = rel(1.2), margin = margin(l = 3, r = 3)),
-      plot.margin = grid::unit(c(0.5, 0.4, 0.2, 0.2), "lines")
+      plot.margin = grid::unit(c(0.5, 0.4, 0.3, 0.2), "lines")
     )
 }
 
@@ -216,17 +217,19 @@
   # Starts with theme_grey and then modify some parts
   theme_grey(base_size = base_size, base_family = base_family) %+replace%
     theme(
-      axis.text = element_text(size = rel(1.3), colour = "grey50"),
+      axis.text = element_text(size = rel(1.2), colour = "grey50"),
       axis.ticks = element_line(colour = "grey80"),
-      axis.title.x = element_text(size = rel(1.2), colour = "grey25"),
+      axis.title.x = element_text(size = rel(1.2), colour = "grey25",
+                                  margin=margin(10,0,0,0)),## update for 2.0.0
       axis.title.y = element_text(size = rel(1.2), colour =
-        "grey25", angle=90),
+        "grey25", angle=90, margin=margin(0,10,0,0)),## update for 2.0.0
       legend.margin = grid::unit(0.1, "cm"),
       legend.key = element_blank(),
+      legend.background =  element_rect(colour = "grey94", fill = "white"),
       legend.text = element_text(size = rel(1.0), face =
         "plain",colour="grey25"),
       legend.title = element_text(size = rel(1.0), face =
-        "bold", hjust = 0,colour="grey25"),
+        "bold", hjust = 0,colour="grey50"),
       panel.background = element_rect(fill = "white", colour = NA),
       panel.border = element_rect(fill = NA, colour = "grey80"),
       panel.grid.major = element_line(colour = "grey90", size = 0.2),
@@ -236,8 +239,17 @@
         size = rel(1.2), margin = margin(t = 3, b = 3)),
       strip.text.y = element_text(angle = -90, colour = "grey25",
         size = rel(1.2), margin = margin(l = 3, r = 3)),
-      plot.margin = grid::unit(c(0.5, 0.4, 0.2, 0.2), "lines")
+      plot.margin = grid::unit(c(0.5, 0.4, 0.3, 0.2), "lines")
     )
+}
+
+named_group_split <- function(.tbl, .sep=" - ", ...) {
+  grouped <- group_by(.tbl, ...)
+  names <- rlang::eval_bare(rlang::expr(paste(!!!group_keys(grouped), sep = .sep)))
+
+  grouped %>% 
+    group_split() %>% 
+    rlang::set_names(names)
 }
 
 ## Attach all the variables above
