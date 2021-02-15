@@ -59,9 +59,9 @@
 (setq save-abbrevs t)              ;; save abbrevs when files are saved
 (setq frame-title-format "%b - emacs");;set the title bar to show buffer name 
 (setq make-backup-files nil) ;; stope those annoying file.extension~ files being made
-(let ((default-directory "~/.emacs.d/lisp/"))
-  (normal-top-level-add-to-load-path '("."))
- (normal-top-level-add-subdirs-to-load-path))
+;;(let ((default-directory "~/.emacs.d/lisp/"))
+;;  (normal-top-level-add-to-load-path '("."))
+;; (normal-top-level-add-subdirs-to-load-path))
 (autoload 'octave-mode "octave-mod" nil t)
 (setq auto-mode-alist
       (cons '("\\.m$" . octave-mode) auto-mode-alist));;use octave mode for all .m files
@@ -85,20 +85,39 @@
 ;;                 "LaTeX"))))))
 (setq TeX-engine 'xetex)
 (require 'package)
-;; Add the original Emacs Lisp Package Archive
-(add-to-list 'package-archives
-             '("elpa" . "http://tromey.com/elpa/"))
-(add-to-list 'package-archives
-			 '("gnu" . "http://elpa.gnu.org/packages/"))
-;; Add the user-contributed repository
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives 
-    '("marmalade" . "http://marmalade-repo.org/packages/"))
+(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                    (not (gnutls-available-p))))
+       (proto (if no-ssl "http" "https")))
+  (when no-ssl
+    (warn "\
+Your version of Emacs does not support SSL connections,
+which is unsafe because it allows man-in-the-middle attacks.
+There are two things you can do about this warning:
+1. Install an Emacs version that does support SSL and be safe.
+2. Remove this warning from your init file so you won't see it again."))
+  ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
+  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+  ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+  (when (< emacs-major-version 24)
+    ;; For important compatibility libraries like cl-lib
+    (add-to-list 'package-archives (cons "gnu" (concat proto "://elpa.gnu.org/packages/")))))
 (package-initialize)
+;; ;; Add the original Emacs Lisp Package Archive
+;; (add-to-list 'package-archives
+;;              '("elpa" . "http://tromey.com/elpa/"))
+;; (add-to-list 'package-archives
+;; 			 '("gnu" . "http://elpa.gnu.org/packages/"))
+;; ;; Add the user-contributed repository
+;; (add-to-list 'package-archives
+;;              '("melpa" . "http://melpa.milkbox.net/packages/") t)
+;; (add-to-list 'package-archives 
+;;     '("marmalade" . "http://marmalade-repo.org/packages/"))
+;; (package-initialize)
 (require 'rainbow-delimiters) ;;coloured nested brackets
-(global-rainbow-delimiters-mode)
-(require 'ess-site) ;;Emacs speaks statistics (like an R mode)
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode);; https://github.com/Fanael/rainbow-delimiters/commit/c1149daac
+;; global mode is no longer available
+;;(global-rainbow-delimiters-mode)
+;;(require 'ess-site) ;;Emacs speaks statistics (like an R mode)
 
 ;; (require 'ess-font-lock)
 ;; (ess-font-lock-db)
@@ -118,20 +137,21 @@
 ;; (set-face-foreground 'font-lock-variable-name-face "Black"))
 ;; from http://grokbase.com/t/r/ess-help/107p2ekr7s/ess-customizing-syntax-highlighting
 ;; change ESS highlighting colours
-(add-hook 'ess-mode-hook
-'(lambda()
-(font-lock-add-keywords nil
-'(("\\<\\(if\\|for\\|function\\|return\\)\\>[\n[:blank:]]*(" 1
-font-lock-keyword-face) ; must go first to override highlighting below
-("\\<\\([.A-Za-z][._A-Za-z0-9]*\\)[\n[:blank:]]*(" 1
-font-lock-function-name-face) ; highlight function names
-;;("[(,][\n[:blank:]]*\\([.A-Za-z][._A-Za-z0-9]*\\)[\n[:blank:]]*=" 1
-("\\([(,]\\|[\n[:blank:]]*\\)\\([.A-Za-z][._A-Za-z0-9]*\\)[\n[:blank:]]*=[^=]" 2
-font-lock-reference-face) ;highlight argument names
-))
-))
-(ess-toggle-underscore nil) ;;prevent ess from replacing _ with <-. (Just use = for assignment!)
-(setq inferior-R-args "--quiet")
+;;(add-hook 'ess-mode-hook
+;;'(lambda()
+;;(font-lock-add-keywords nil
+;;'(("\\<\\(if\\|for\\|function\\|return\\)\\>[\n[:blank:]]*(" 1
+;;font-lock-keyword-face) ; must go first to override highlighting below
+;;("\\<\\([.A-Za-z][._A-Za-z0-9]*\\)[\n[:blank:]]*(" 1
+;;font-lock-function-name-face) ; highlight function names
+;;;;("[(,][\n[:blank:]]*\\([.A-Za-z][._A-Za-z0-9]*\\)[\n[:blank:]]*=" 1
+;;("\\([(,]\\|[\n[:blank:]]*\\)\\([.A-Za-z][._A-Za-z0-9]*\\)[\n[:blank:]]*=[^=]" 2
+;;font-lock-reference-face) ;highlight argument names
+;;))
+;;))
+;;(ess-toggle-underscore nil) ;;prevent ess from replacing _ with <-. (Just use = for assignment!)
+;;(setq inferior-R-args "--quiet")
+
 
 ;;Adjusting load-path after updating packages http://www.emacswiki.org/emacs/ELPA
 ;;To my mind one of the faults of ELPA is that the load path is not updated when new packages are installed. Here is a command that will do it for you:
@@ -162,7 +182,7 @@ font-lock-reference-face) ;highlight argument names
 (global-set-key [(control shift tab)] 'tabbar-backward-tab) ;; doesn't work for some reason!!?
 (require 'hlinum);; Highlights the current line
 (hlinum-activate)
-(adaptive-wrap-prefix-mode 1);; use adaptive wrapping (remember to start lines with spaces!)
+;;(adaptive-wrap-prefix-mode 1);; use adaptive wrapping (remember to start lines with spaces!)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 (require 'whitespace);;http://emacsredux.com/blog/2013/05/31/highlight-lines-that-exceed-a-certain-length-limit/
@@ -266,9 +286,27 @@ font-lock-reference-face) ;highlight argument names
         (setq-default indent-tabs-mode nil)
         (setq-default tab-width 4)
         (setq-default python-indent 4)))
+
+;;(package-initialize)
+;;(elpy-enable)
+;;(elpy-use-ipython)
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(linum-highlight-face ((t (:inherit default :background "deep pink" :foreground "yellow")))))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+	(hlinum rainbow-delimiters rainbow-mode adaptive-wrap))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
