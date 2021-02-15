@@ -1,0 +1,447 @@
+bash commands
+
+ps    -    list current processes
+top   -   tells you what is using power
+ctrl-z -   pauses current process
+kill ####  - kills process number #### (do this after ctrl-z and ps to get number)
+kill -9 ####  - rips its heart out (do after kill and ps if it still there)
+fg   -     continues process in foreground (after ctrl-z)
+bg  -     continues process in background (after ctrl-z)
+& (at end of command)  -   starts things in background
+cat   -    prints file to screen
+ls   -   list things
+cd {a directory name}   -  change down into that directory
+cd ..   -   go up directory
+aquamacs .emacs   -   to change keyboard shortcuts
+python myprog.py   -   uses python to run myprog.py, with output being on screen
+python myprog.py > myoutput.out   -   all prog output will be put in a file called myoutput.out
+>>   -  this appends things rather than overwriting created file
+for i in {1..n}; do python myprog.py > myprog.out$i; done   -   does n runs of myprog, with all results from 1 run going in an individual file with extension eg. .out1, .out2, ..., .outn
+more - shows what's is in the file
+less - less is more than more (hahaha, how funny)
+cat  - similar to more or less (shows everything, but without pages)
+cp thingtocopy wheretocopyit  -  copies file thingtocopy to folder wheretocopyit
+alias   -  tells you what aliases you have (use vi ~/.bashrc to make new permanent ones (I think))
+sudo su then killall -KILL winbindd  -   kills those stupid winbindd things that slow the mac down horrifically
+killall Python; python 3cellnetmk1.py - quicker way to close figs rather than with the mouse. also does the next command ie. python ...
+open  -  opens things using the correct program
+tail -n100 - shows the last 100 lines
+diff file1 file2 - compares differences between 2 files (output is cryptic - see example below:)
+------------------------------------------------------------------------------------
+diff cookies.old cookies.new
+5c5
+< One cup vanilla extract
+---
+> One teaspoon vanilla extract
+7d6
+< Six ounces chopped liver
+21a22
+> Note: The previous version of this recipe had a few errors!
+
+The output is actually a description of how to transform the old file into the new one. Here, diff is telling you three things:
+
+� The fifth line of the file has undergone a change. The 5c5 message says to replace line 5 of the old file with line 5 of the new file. Both the old and new text are displayed, separated by a line of three dashes. (The less-than (<) notation means "remove this line," and the greater-than (>) sign means "add this line.")
+
+� Line 7 of the old file does not appear in the new file. The 7d6 message says to delete line 7 from the old file, and the files will then be in sync, starting at line 6 of the new file. The text to be deleted is displayed on the next line.
+
+� A line was added to the new file. The 21a22 message says to add a new line after line 21 of the old file. The text to be added is displayed on the final line of the output.
+
+Two useful flags you can specify when comparing files are -b (ignore blanks) and -i (ignore case). You can use them separately or in combination. The ignore blanks feature is especially useful when you're comparing the source code for two programs, since indentation changes are rarely significant.
+------------------------------------------------------------------------------------------------------------------------------------------------------
+cat LFY-FD.out* | grep -A2 Finished | tr -d "\n" | sed 's/\-\-Finished: /\
+/'g | sed 's/Finished: //' | cut -c 21- | tr ] ' ' | awk 'BEGIN { print "PARAMETER & AVERAGE & ST DEV \\\\"} { for (i=1; i<=19; i++) sum[i]+=$i; for (i=1; i<=19; i++) sum_squared[i]+=$i*$i } END { for (i=1; i<=19; i++) print "\\ldots & " sum[i]/NR " & " sqrt( sum_squared[i]/NR - sum[i]*sum[i]/NR/NR) " \\\\"}'
+
+cat TFL1const.out* | grep -A2 Finished | tr -d "\n" | sed 's/\-\-Finished: /\
+/'g | sed 's/Finished: //' | sed 's/[0-9 .e-]*//' | cut -c 3- | tr ] ' ' | awk 'BEGIN { print "PARAMETER & AVERAGE & ST DEV \\\\"} { for (i=1; i<=19; i++) sum[i]+=$i; for (i=1; i<=19; i++) sum_squared[i]+=$i*$i } END { for (i=1; i<=19; i++) print "$k_{}$ & " sum[i]/NR " & " sqrt( sum_squared[i]/NR - sum[i]*sum[i]/NR/NR) " \\\\"}'
+
+awk '{str = $1 ; getline < "newTFL1const.results" ; print str " " $2 " " $3 " " $4 " " $5 " " $6 > "out.txt"}' "onecol.txt"
+
+cat TFL1const.out* | grep -A2 Finished | tr -d "\n" | sed 's/\-\-Finished: /\
+/'g | sed 's/Finished: //' | sed 's/[0-9 .e-]*//' | cut -c 3- | tr ] ' ' | awk '{col = $17 ; print col  ","}' | tr '\n' ' '
+
+FROM=test2_folder_backup ; TO=test3 ; for i in `ls $FROM/*.f95 $FROM/*.f $FROM/Makefile`; do NAME=`basename $i`; NEWNAME=`echo $NAME | sed -e 's/test2/test3/g'`; cp $FROM/$NAME $TO/$NEWNAME ; done ; cd $TO ; touch outtest.data
+
+less samples9.data | tail | grep samples | cut -c 27- | sed 's/\s\s*/, /g' | sed 's/^/(\/ /' | sed 's/$/\/)/' (in sed ^ means start of line, and $ means end)
+cat samples1.data | awk '{for (i=4; i<=19; i++) sum[i]+=$i} END {for (i=4; i<=19; i++) print sum[i]/1000}'
+cat samples1.data | awk '{for (i=4; i<=19; i++) sum[i]+=$i; for (i=4; i<=19; i++) sum_squared[i]+=$i*$i} END {for (i=4; i<=19; i++) print sum[i]/1000 " & " sqrt( sum_squared[i]/1000 - sum[i]*sum[i]/1000/1000)}'
+less output-*.txt | grep -n "Nested"
+less output-9329[1-9].txt output-933*.txt | grep "average" | cut -c 11-420
+grep "OPTIMAL FUNCTION VALUE" * | sort -k5n
+
+find . -name "output-937*.txt" -exec sh -c "tail -n12 '{}' | head -n2" \;   finds all output files, and executes a shell command on each of them. That command is to tail '{}' ie. whatever find found, then pipe it all to head. \; is to end the exec.
+
+find . -name "output-937*.txt" -exec sh -c "tail -n12 '{}' | head -n2" \;| sed 's/\s\s*/, /g' | sed 's/^/(\/ /' | sed 's/$/\/)/'
+find . -name "output-125143.txt" -exec sh -c "tail -n14 '{}' | head -n3" \; | tr '\n' '\t' | sed 's/\s\s*/, /g' | sed 's/^/(\/ /' | sed 's/$/\/)/' | sed s'/(\/ ,/params = (\//' | sed s'/, \/)/\/)/'
+
+find . -name "output-93*.txt" -exec sh -c "tail -n12 '{}' | head -n2" \; | sed -e 'N;s/\n/ / '	The last command seems to read two lines, and replaces the newline with a space, thus giving one line.
+
+cat OPTIMALFNVALUES | awk '{sum+=$5} END {print sum/40}'
+cat OPTIMALFNVALUES | sort -k 5,5n   =  -k sorts by column, 5,5 means start at the beginning of column 5 and go to the end of column 5, n means numeric sort
+cat OPTIMALFNVALUES | awk '{print 1/$5 "   " $5 "    " exp(1/$5)}' | sort -k 1,1n
+cat OPTIMALFNVALUES | awk '{print 1/$5 "   " $5 "    " exp(1/$5) "   "} {sum+=exp(1/$5)} END {print sum}' | sort -k 1,1n
+cat parameters | awk '{for (i=1; i<=16; i++) sum[i]+=$i; for (i=1; i<=16; i++) sum_squared[i]+=$i*$i} END {for (i=1; i<=16; i++) print sum[i]/40 " & " sqrt( sum_squared[i]/40 - sum[i]*sum[i]/40/40)}'
+cat output-93818.txt | tail -12 | head -2 | sed -e 'N;s/\n/ / '
+
+cat tmp-all-data | awk '{for (i=1; i<=16; i++) sum[i]+=$i; for (i=1; i<=16; i++) sum_squared[i]+=$(i+16)} END {for (i=1; i<=16; i++) print sum[i]/1 " & " sqrt( sum_squared[i]/1 - sum[i]*sum[i]/1/1)}'
+
+Commands for analysing SIMANN data to produce weighted avgs & s.d.s 
+
+find . -name "output-96*.txt" -exec sh -c "grep -H \"OPTIMAL FUNCTION VALUE\" '{}'" \;
+
+ 1345  2012-01-20 16:35:40 vi OPTIMALFNVALUES 
+ 1346  2012-01-20 16:36:01 cat OPTIMALFNVALUES | awk '{print $5 "    " exp(-$5) "   "} {sum+=exp(-$5)} END {print sum}'
+ 1347  2012-01-20 16:36:20 cat OPTIMALFNVALUES | awk '{print $5 "    " exp(-$5) "   "} {sum+=exp(-$5)} END {print sum}' > tmp-fnval-and-exp-minus-it
+ 1349  2012-01-20 16:37:20 cat tmp-fnval-and-exp-minus-it | awk '{ print $2 "   " $2/1.24542; sum+=$2/1.24542} END { print sum}'
+ 1350  2012-01-20 16:37:35 cat tmp-fnval-and-exp-minus-it | awk '{ print $2 "   " $2/1.24542; sum+=$2/1.24542} END { print sum}' > tmp-normed-weight-factors
+ 1351  2012-01-20 16:37:47 paste parameters tmp-normed-weight-factors > tmp-params-and-normed-weight-factors-inlastcolumn
+ 1352  2012-01-20 16:38:00 less tmp-params-and-normed-weight-factors-inlastcolumn 
+ 1353  2012-01-20 16:38:20 vi tmp-params-and-normed-weight-factors-inlastcolumn 
+ 1354  2012-01-20 16:38:58 cat tmp-params-and-normed-weight-factors-inlastcolumn | awk '{for (i=1; i<=16; i++) printf "%g\t", $i*$18; if (i=16) print "\n" }' > tmp-weighted-params-for-mean
+ 1355  2012-01-20 16:39:03 cat tmp-params-and-normed-weight-factors-inlastcolumn | awk '{for (i=1; i<=16; i++) printf "%g\t", $i*$i*$18; if (i=16) print "\n" }' > tmp-weighted-params-squared
+ 1356  2012-01-20 16:39:17 paste tmp-weighted-params-for-mean tmp-weighted-params-squared > tmp-all-data
+ 1357  2012-01-20 16:39:37 cat tmp-all-data | awk '{for (i=1; i<=16; i++) sum[i]+=$i; for (i=1; i<=16; i++) sum_squared[i]+=$(i+16)} END {for (i=1; i<=16; i++) print sum[i]/1 " & " sqrt( sum_squared[i]/1 - sum[i]*sum[i]/1/1)}'
+
+AWK if statements:
+
+Single Action Syntax:
+
+if (conditional-expression)
+	action
+
+Multiple Action Syntax:
+
+if (conditional-expression)
+{
+	action1;
+	action2;
+}
+
+If Else Statement Syntax:
+
+if (conditional-expression)
+	action1
+else
+	action2
+
+ls * | awk '{print("mv "$1" "$1) }' | sed s'/oldfilename/newfilename/2' | /bin/sh = batch rename files (doesn't work if there are spaces in the name (prob due to awk not ignoring whitespace))
+chmod +x filename - makes a file executable
+ls *.f95 | awk '{print("mv "$1" "$1) }' | sed s'/f95/f90/2' | /bin/sh
+for f in *.JPG; do mv "$f" "2016-02-01_17C_${f// /}";done (remove spaces in filenames http://stackoverflow.com/a/18213120/3275826 you can put whatever you want to replace the space with after the final /
+
+cat grepped-prior-rel-factor.data | sort -k 6,6n -k 7,7n | awk 'BEGIN{ OFS="\t" } {print $6 "\t" $7 "\t" $8}' >greppedSORTEDpriorrelfactor.data
+cat greppedSORTEDpriorrelfactor.data | awk '{sum += $3}!(NR % 10){printf("%d %d %g\n", $1, $2, sum/10); sum = 0;}'
+cat finalrelprioravged.data | awk '{print $1 " " $2 " " $3}!(NR % 12){print "\n"}' > finalrelprioravged4GNUPLOT.data = print 12 records, then 2 new lines
+cat datafile | awk '!(NR % 100){print $1 " " $2}' > dump = prints every 100th row to dump
+n=12; b=10; cat data | head -n$n > tmp; for (( i=2*$n; i<=($b+1)*$n; i+=$n )); do cat data | head -n$i | tail -n$n | awk '{print $3}' | paste tmp - > tmp2; mv -f tmp2 tmp; done; cat tmp | awk '{print $3 " & " $4 " & " $5 " & " $6 " & " $7 " & " $8 " & " $9 " & " $10 " & " $11 " & " $12}'; mv tmp output
+
+==================================================================================
+12.03.2012
+
+cat item1data | sort -k 6,6n -k 7,7n | awk 'BEGIN{ OFS="\t" } {print $6 "\t" $7 "\t" $8}' > item1sorted
+cat item1sorted | awk 'BEGIN{ OFS="\t" } {print($1 "\t" $2/$1 "\t" $3)}' > item1forR
+cat item1forR | awk '{sum += $3}!(NR % 10){printf("%f %f %g\n", $1, $2, sum/10); sum = 0;}' | awk '{print $1 " " $2 " " $3}!(NR % 12){print "\n"}' > item1forGNUplot
+plot "item1forGNUplot" index 0 using 2:(-$3) with lines, "item1forGNUplot" index 1 using 2:(-$3) with lines, "item1forGNUplot" index 2 using 2:(-$3) with lines, "item1forGNUplot" index 3 using 2:(-$3) with lines, "item1forGNUplot" index 4 using 2:(-$3) with lines, "item1forGNUplot" index 5 using 2:(-$3) with lines
+==================================================================================
+
+cat item1bsorted | awk 'BEGIN{ OFS="\t" } {print($1 "\t" $2/$1 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 "\t" $10 "\t" $11 "\t" $12 "\t" $13 "\t" $14)}' | awk '{sum1 += $3}{sum2 += $4}{sum3 += $5}{sum4 += $6}{sum5 += $7}{sum6 += $8}{sum7 += $9}{sum8 += $10}{sum9 += $11}{sum10 += $12}{sum11 += $13}{sum12 += $14}!(NR % 10){printf("%f %f %g %g %g %g %g %g %g %g %g %g %g %g\n", $1, $2,  sum1/10, sum2/10, sum3/10 ,sum4/10 ,sum5/10 ,sum6/10 ,sum7/10 ,sum8/10 , sum9/10 , sum10/10 , sum11/10 , sum12/10); sum1 = 0; sum2 = 0; sum3 = 0; sum4 = 0; sum5 = 0; sum6 = 0; sum7 = 0; sum8 = 0;  sum9 = 0;  sum10 = 0;  sum11 = 0;  sum12 = 0;}' | awk '{print $1 " " $2 " " $3 " " $4 " " $5 " " $6 " " $7 " " $8 " "$9  " " $10 " " $11 " " $12 " " $13 " " $14}!(NR % 12){print "\n"}'
+
+n=3; b=3; cat data | head -n$n > tmp; for (( i=2*$n; i<=($b+1)*$n; i+=$n )); do cat data | head -n$i | tail -n$n | awk '{print $2}' | paste tmp - > tmp2; mv -f tmp2 tmp; done; cat tmp; mv tmp output
+
+n=6; b=5; cat sortedavg | head -n$n > tmp; for (( i=2*$n; i<=($b+1)*$n; i+=$n )); do cat sortedavg | head -n$i | tail -n$n | awk '{print $3}' | paste tmp - > tmp2; mv -f tmp2 tmp; done; cat tmp | awk '{print $3 " & " $4 " & " $5 " & " $6 " & " $7 " & " $8 " & " $9 " & " $10 " & " $11 " & " $12}'; mv tmp output
+
+plot "item1forR" index 0 using 2:($3) with lines, "item1forR" index 0 using 2:($4) with lines, "item1forR" index 1 using 2:($3) with lines, "item1forR" index 1 using 2:($4) with lines, "item1forR" index 2 using 2:($3) with lines, "item1forR" index 2 using 2:($4) with lines, "item1forR" index 3 using 2:($3) with lines, "item1forR" index 3 using 2:($4) with lines, "item1forR" index 4 using 2:($3) with lines, "item1forR" index 4 using 2:($4) with lines, "item1forR" index 5 using 2:($3) with lines, "item1forR" index 5 using 2:($4) with lines
+
+plot "item1forRSIGMAs" index 0 using 2:($3) with lines, "item1forRSIGMAs" index 0 using 2:($4) with lines, "item1forRSIGMAs" index 1 using 2:($3) with lines, "item1forRSIGMAs" index 1 using 2:($4) with lines, "item1forRSIGMAs" index 2 using 2:($3) with lines, "item1forRSIGMAs" index 2 using 2:($4) with lines, "item1forRSIGMAs" index 3 using 2:($3) with lines, "item1forRSIGMAs" index 3 using 2:($4) with lines, "item1forRSIGMAs" index 4 using 2:($3) with lines, "item1forRSIGMAs" index 4 using 2:($4) with lines, "item1forRSIGMAs" index 5 using 2:($3) with lines, "item1forRSIGMAs" index 5 using 2:($4) with lines
+
+gnuplot> plot "finalrelprioravged4GNUPLOT.data" index 0 using 2:(-$3) withlines, "finalrelprioravged4GNUPLOT.data" index 1 using 2:(-$3) with lines,"finalrelprioravged4GNUPLOT.data" index 2 using 2:(-$3) with lines,"finalrelprioravged4GNUPLOT.data" index 3 using 2:(-$3) with lines,"finalrelprioravged4GNUPLOT.data" index 4 using 2:(-$3) with lines,"finalrelprioravged4GNUPLOT.data" index 5 using 2:(-$3) with lines,"finalrelprioravged4GNUPLOT.data" index 6 using 2:(-$3) with lines,"finalrelprioravged4GNUPLOT.data" index 7 using 2:(-$3) with lines,"finalrelprioravged4GNUPLOT.data" index 8 using 2:(-$3) with lines,"finalrelprioravged4GNUPLOT.data" index 9 using 2:(-$3) with lines
+
+gnuplot> plot "finalrelprioravged4GNUPLOT.data" index 0 using 2:(-$3) with lines,"finalrelprioravged4GNUPLOT.data" index 2 using 2:(-$3) with lines,  "finalrelprioravged4GNUPLOT.data" index 4 using 2:(-$3)with lines,"finalrelprioravged4GNUPLOT.data" index 6 using 2:(-$3)with lines,"finalrelprioravged4GNUPLOT.data" index 8 using 2:(-$3)with lines
+
+gnuplot> plot "finalrelprioravged4GNUPLOT.data" index 1 using 2:(-$3)with lines, "finalrelprioravged4GNUPLOT.data" index 3 using 2:(-$3)with lines,  "finalrelprioravged4GNUPLOT.data" index 5 using 2:(-$3)with lines, "finalrelprioravged4GNUPLOT.data" index 7 using 2:(-$3)with lines, "finalrelprioravged4GNUPLOT.data" index 9 using 2:(-$3)with lines
+
+plot "item1forGNUplot" index 0 using 2:(-$3) with lines, "item1forGNUplot" index 1 using 2:(-$3) with lines, "item1forGNUplot" index 2 using 2:(-$3) with lines, "item1forGNUplot" index 3 using 2:(-$3) with lines, "item1forGNUplot" index 4 using 2:(-$3) with lines, "item1forGNUplot" index 5 using 2:(-$3) with lines
+
+find . -type f | wc -l = number of files in a directory
+
+find . -name "*sa*.py" -print0 | xargs -0 stat = find files in this directory with sa somewhere in their name, ending in .py, and do stat on them. Stat tells you timestamp info, -0 makes xargs handle spaces in paths correctly, and -print0 gives it in the right format to do this.
+
+convert order*.eps tmp.pdf = converts lots of .eps files in to a single pdf using imagemagick, not really that great as IM rasterises it.
+
+bkill -u all 0 = kill all my cluster jobs
+
+in less do = to get the line number
+
+grep "Nested Result" ../type1/output-1255* | awk '{print $4}' | awk '{sum+=$1; sum_squared+=$1*$1} END {print sum/NR " & " sqrt( sum_squared/NR - sum*sum/NR/NR)}'
+
+ls -a | grep -v -e "output-1*" -e "checking" -e "samples" | wc -l  = list all files that don't match output, checking or samples, then count how many there are (will include . and ..)
+
+awk '{ printf $NF;$NF = "" ;printf " "$0"\n" }' | sort  = does something like sort by last column, by moving it to first column and sorting that
+
+for z in range(len(X)):
+    print '%f %f' % (X[z], Y[z])  = printing lists in python/from ipython without []
+
+awk '{if(min==""){min=max=$2}; if($2>max) {max=$2}; if($2<min) {min=$2}; total+=$2; count+=1} END {print total/count, min, max}' true-rep-data  = print mean, min, and max of column 2
+
+mplayer -playlist http://radio.q-dance.nl/q-danceradio.pls
+
+To get on to windows from Linux, open a terminal, type:
+rdesktop nbi-ts (or rdesktop -g 1910x1100 nbi-ts (for full screen))
+then log on to: NR4
+
+To set up ssh shortcut:
+[Nick@n61938 repressilator]⚽  vi ~/.ssh/config (edit this file)
+Host shortcut_name
+Hostname foo.bar.sth.ac.uk (thing after @)
+User username
+[Nick@n61938 repressilator]⚽  ssh-copy-id uea (copy key so that it works after enabling access to keys)
+Enter Password:
+Now try logging into the machine, with "ssh 'shortcut_name'", and check in:
+
+  .ssh/authorized_keys
+
+to make sure we haven't added extra keys that you weren't expecting.
+
+1006  2012-08-16 14:49:45 mountgit.sh
+#!/bin/bash
+sudo mount.cifs //foo/bar/Research-Groups/professor/shared/gitrepos /home/Nick/gitrepos -o user=username,dom=FOO,uid=500,gid=500
+
+then do
+ 1007  2012-08-16 14:53:09 mkdir 1dpost.git (make a dir within shared thing)
+ 1008  2012-08-16 14:53:13 cd 1dpost.git/
+ 1009  2012-08-16 14:53:19 git init --bare 
+go to folder to share
+ 1009  2012-08-16 14:51:32 git init
+ 1010  2012-08-16 14:51:44 git add * (add whatever)
+ 1011  2012-08-16 14:51:47 git st
+ 1012  2012-08-16 14:52:00 git ci -m "First commit"
+ 1013  2012-08-16 14:55:07 git remote add groupshare /home/Nick/gitrepos/1dpost.git (groupshare is just an alias for 2nd thing)
+ 1014  2012-08-16 14:55:18 git push groupshare master (push master branch to thing on shared storage)
+
+ 1017  2012-08-16 15:00:58 vi Makefile (make a change)
+ 1018  2012-08-16 15:01:37 git ci -am "Added comment to Makefile" (commit change)
+ 1020  2012-08-16 15:01:51 git push groupshare master (push back to share after change)
+ 1022  2012-08-16 15:05:25 vi .git/config ( put these lines in below to enable just push and pull. Do this in every initted folder)
+[branch "master"]
+        remote = groupshare
+        merge = refs/heads/master
+) 
+ 1023  2012-08-16 15:06:31 git pull (gets latest code from shared storage)
+ 1025  2012-08-16 15:06:54 git log (see changes committed by everyone)
+
+cat EXP-rep-data-not-normalised | awk '{{max=$2};if($2>max){max=$2}} END {print max}'
+
+Vi Replace: Same as with sed, Replace OLD with NEW:
+
+ First occurrence on current line:      :s/OLD/NEW
+  
+ Globally (all) on current line:        :s/OLD/NEW/g 
+
+ Between two lines #,#:                 :#,#s/OLD/NEW/g
+  
+ Every occurrence in file:              :%s/OLD/NEW/g 
+
+How do I add something to my $PATH?
+you don't really add something to your path, you add the directory that the somthing lives in.
+
+PATH=$PATH:/directory/to/be/added
+export PATH
+
+Put in ~/.bashrc to make permanent
+
+awk 'NR%200==1' data | less = prints every 200th line
+
+awk '{printf "%s, ", $2} END {printf "\n"}' TFL1-FT-data = basically changes a newline to a ", " so get 1 row from a column. Last bit puts a final return. Note will have a comma after the last entry which you probably do not want. (Using tr '\n' '`' | sed s'/`/, /g' might be a better way)
+
+mplayer -loop 0 -ss 03:40.0 -endpos 85.5 track.mp3 = play track in an endless loop starting at 3m40s and for 85.5 seconds
+
+sort REPpost_equal_weights.dat | uniq --count = count number of duplicate lines in a file and prefix this to all lines (duplicates are merged i.e. then get 2 as a prefix)
+Note:  'uniq'  does not detect repeated lines unless they are adjacent.  You may want to sort the input first, or use 'sort -u' without 'uniq'.
+sort REPpost_equal_weights.dat | uniq -c -d = count and print ONLY duplicate lines
+
+Use [[:space:]] (instead of [:space:]) to strip whitespace with sed.
+# compare
+{
+echo '   abc' | sed 's/^[:space:]*//'
+echo '   abc' | sed 's/^[[:space:]]*//'
+}
+
+\grep minusefvern ~/Brassica/GWAS/From\ TASSEL/FTJIC2012TASSELoutput_tOSR101new_corrected_chrUnknown_0-225010_+_Filtered_JIC2012FT_+_Filtered_OSR101_Qmatrix_simples_stats.txt | awk 'BEGIN {OFS = "\t"} function log10(number){return log(number)/log(10.0)} {print $1, $2, -log10($7)}' | sort -k3g | tail
+
+As above you can use \ in front of a command to ignore it's alias in .bashrc
+Also see how a log10 function was defined and used in awk.
+
+## When someone gives a bad tarball that extracts files everywhere rather than in a single folder you can do
+tar -tzf foo.tar.gz $SUBPATHS | sort -r | xargs rm -f 2>/dev/null
+tar -tzf foo.tar.gz $SUBPATHS | sort -r |  xargs rmdir 2>/dev/null
+## Though it's better to use -C to put it in a directly (need to mkdir 1st)
+tar -xzf foo.tar.gz -C foo/
+
+## As pdftk is not working in F21+ you can use pdfjam which required latex. Need papersize o/wise get A4
+pdfjam --papersize '{5.04in,3.78in}' SLCU.pdf 46-49 -o aa2.pdf ## extract pages 46-49 from SLCU to aa2
+pdfjam --papersize '{5.04in,3.78in}' aa1.pdf bb.pdf aa2.pdf cc.pdf -o finalPresAlmost.pdf ## join files together
+
+## A better way to merge PDFs can be like below. the prepress option gives high quality, color preserving, 300 dpi imgs
+gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -dPDFSETTINGS=/prepress -sOutputFile=output.pdf PNAS-Pullenetal_sdpedit.pdf ../supp.pdf
+## from https://stackoverflow.com/a/19358402 and http://milan.kupcevic.net/ghostscript-ps-pdf/
+## to reduce a file size try like this (though appeared to cause problems for PNAS's 'conversion' tool
+gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -dPDFSETTINGS=/prepress -sOutputFile=final.pdf PNAS-Pullenetal.pdf 
+
+## batch renaming of files to have a certain string in front (in this "22C_20150601_")
+for i in *.jpg; do echo mv "$i" "`echo $i | sed s'/^/22C_20150601_/'`"; done
+for i in *.jpg; do mv "$i" "`echo $i | sed s'/^/22C_20150601_/'`"; done
+## the parameter expansion ${PWD##*/} gets the basename of the current dir. This is better than above by using $() to replace ``
+for i in T*.JPG; do mv "$i" "$(echo $i | sed s"/^Tray\ /${PWD##*/}_/" | sed s"/,/./" | sed s"/.JPG/_Ler-spt-della4.JPG/")"; done
+
+## convert date formats to ISO like
+echo "18092015" | sed -n -e "s_\(..\)\(..\)\(....\)_\3-\2-\1_p"
+echo "18092015" | awk 'BEGIN {OFS="-"}{print substr($1,5,4), substr($1,3,2), substr($1,1,2)}'
+
+## rotate a photo using ImageMagick's convert
+convert Tray\ 1\,8mM.JPG -rotate 90 rotated_photo.JPG
+convert 0mM.JPG -rotate 90 0mM.JPG
+
+## play with maxdepth to get deeper info. This counts # of files I guess
+find -maxdepth 2 -type d | while read -r dir; do printf "%s:\t" "$dir"; find "$dir" -type f | wc -l; done
+
+## remove stuff from end of file and put quotes and comma round them. And then all on 1 line
+ls | sed s'/_data.dat/",/' | sed s'/^/"/' | tr '\n' ' '
+
+## might need to look at this again (in dconf-editor) as not working properly (can't get CtrlAltShift{L,R} to work now) and keyboard changed by pressing Alt-shift!! Test with #~"
+org.cinnamon.settings-daemon.peripherals.keyboard input-sources-switcher 'off'
+
+## Python virtualenv
+virtualenv virt_env/virt1 ## –no-site-packages could be useful
+source virt_env/virt1/bin/activate
+deactivate
+
+## Vi delete all whitespace where \s finds whitespace (a space or a tab), and \+ finds one or more occurrences
+:%s/\s\+//g
+
+## grep only in certain files (here grep for (ape) in all *.R files recursively in Documents)
+grep -r --include="*.R" "(ape)" ~/Documents
+
+## awk include bash variable, use the -v varname flag 
+for i in {3..7}; do awk -v column="$i" 'BEGIN { sum=0.0; sumw=0.0} { sum+=$1*$column; sumw+=$1 } END {print sum/sumw}' chains/gaussian.txt; done
+## this is probably right for SD
+for i in {3..4}; do awk -v column="$i" 'BEGIN { sum=0.0; sumw=0.0; sumSq=0.0} { sum+=$1*$column; sumw+=$1; sumSq+=$1*$column*$column} END {print sum/sumw " +/- " sqrt(sumSq/sumw - sum*sum/sumw/sumw)}' susan_cabTEST.txt; done
+
+## convert a large tif file into a more manageable jpg at hopefully 300 dpi
+convert -units PixelsPerInch -density 300 -quality 30 AndyDavis_Ler_sptdella.tif AndyDavis_Ler_sptdella.jpg
+
+## comm is the command to compare 2 sorted files by lines showing the output in 3 columns of:
+## "lines unique to FILE1" "lines unique to FILE2" "lines that appear in both files"  
+e.g.
+>> cat A
+geneA  +
+geneB  +
+geneC  -
+>> cat B
+geneB  +
+geneC  +
+>> comm A B
+geneA  +
+		geneB  +
+geneC  -
+	geneC  +
+
+## make lots of QR codes
+for i in {1..6}; do qr 'Ler_1pm_'$i > 'Ler_1pm_'$i'.png' && echo $i; qr 'Ler_7pm_'$i > 'Ler_7pm_'$i'.png' && echo $i; qr 'Ler_7am_'$i > 'Ler_7am_'$i'.png' && echo $i; done
+for i in {1..6}; do qr 'Col_1pm_'$i > 'Col_1pm_'$i'.png' && echo $i; qr 'Col_7pm_'$i > 'Col_7pm_'$i'.png' && echo $i; qr 'Col_7am_'$i > 'Col_7am_'$i'.png' && echo $i; done
+## use Imagemagick convert to add a label
+for i in $(ls -rt Ler*); do convert $i -pointsize 30 -gravity north label:"${i//.png/}" -composite ''${i//.png/}'_lab.png'; done
+for i in $(ls -rt Col*); do convert $i -pointsize 30 -gravity north label:"${i//.png/}" -composite ''${i//.png/}'_lab.png'; done
+## group them together using the Imagemagick montage
+montage $(ls -rt Ler*_lab*) -tile 3x6 -geometry +5+5 mutliLer.png
+montage $(ls -rt Col*_lab*) -tile 3x6 -geometry +5+5 mutliCol.png
+
+awk 'BEGIN{FS=","; OFS=","} {print $1, $7, $8, $9 }' allThicknesses.csv
+
+## rename file using a calculation with i
+for i in {10..15}; do mv image00$i.tif 2017-08-31_plate1_spt_$(($i-7)).tif; done
+## replace spaces with underscores in folder names
+find -name "* *" -print0 | sort -rz | while read -d $'\0' f; do mv -v "$f" "$(dirname "$f")/$(basename "${f// /_}")"; done
+
+## print a list or column of numbers in vi from http://vim.wikia.com/wiki/Making_a_list_of_numbers
+## It is easy to insert a list of ascending numbers, for example, this command inserts five lines after the current line:
+:put =range(11,15)
+## The list of numbers can be formatted with leading zeros (here e.g. 0039)
+:put =map(range(0,39), 'printf(''%04d'', v:val)')
+
+## http://www.catonmat.net/blog/sed-one-liners-explained-part-one/
+## 40. Append a line to the previous if it starts with an equal sign "=".
+sed -e :a -e '$!N;s/\n=/ /;ta' -e 'P;D' filename
+## In my case, replace a line starting with NEW with essentially a backspace to join to the previous line
+sed -e :a -e '$!N;s/\nNEW//;ta' -e 'P;D' tmp-totalLeafMass2 | less
+
+## convert a batch of tifs in one folder into jpgs in the current working dir maintaining their original file name
+for i in $(ls -rt /home/nick/storage/Nick/ZNC_experiments/cotExperimentPhotos/2017-11-06_PhotosOfPlates_Ler_sptdella/Ler_spt2qdella_Germination/2017-11-2*_3_*); do convert -units PixelsPerInch -density 300 -quality 30 $i $(basename "${i//.tif/.jpg}"); done
+
+## Use pandoc to convert from an md file to a Word file
+pandoc -o figLegends.docx legends.md
+
+## Go max 2 levels deep to find all dirs and their file size then sort this numerically
+du -d2 | sort -n
+
+## In vi (NB remember to replace the ^M with actual CTRL-v, CTRL-m!)
+:%s/zh-CN">/^MZZZhhh/g
+:%s/-en">/^MEEEnnn/g
+:v/^\(EEE\|ZZZ\)/d   = delete lines not matching either EEE or ZZZ
+:%s/<\/span.*//g   = delete rest of line after matching </span 
+:%s/(/\t/g   = replace opening bracket with a tab
+
+## To remove every other carriage return you can do this trick using paste
+## https://serverfault.com/a/375104
+## paste is used to concatenate corresponding lines from files: paste file1 file2 file3 .... If one of the "file" arguments is "-", then lines are read from standard input. If there are 2 "-" arguments, then paste takes 2 lines from stdin. And so on.
+cat orderedCharactersToLearn.txt | paste - - > tmp   = tab separated
+cat orderedCharactersToLearn.txt | paste -d "," - - > tmp2 = for comma separated
+
+## Take a tab-separated file and swap the order of cols 2 & 3
+awk 'BEGIN{ FS="\t" } {print $1 "\t" $3 "\t" $2}' orderedCharactersToLearn.txt > tmp
+## OR more fancily specify the output field separator too
+awk 'BEGIN{ FS="\t"; OFS="\t"} {print $1, $3, $2}' orderedCharactersToLearn.txt > tmp2
+
+## In vi, use awk to swap two columns that are opposite sides of an =
+:%!awk 'BEGIN{ FS=" = " } {print $2, "=", $1}'
+
+http://www.dropboxwiki.com/tips-and-tricks/install-dropbox-in-an-entirely-text-based-linux-environment#Running_on_system_startup
+
+http://tex.stackexchange.com/questions/16582/center-figure-that-is-wider-than-textwidth
+
+Put the content of your figure environment into a \makebox[\textwidth][c]{...} macro. This will center its content to the normal text width even if it is wider than that. See also my similar answer to Place figures side by side, spill into outer margin.
+
+The image can also be aligned to the left and right using [l] and [r], which makes the image lap into the right or left margin, respectively.
+
+Example:
+\documentclass{article}
+\usepackage{graphicx}
+\begin{document}
+
+\begin{figure}
+  \makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]{image}}%
+  \caption{Caption}
+  \label{fig:key}
+\end{figure}
+\end{document}
+
+\addtocounter{table}{1}%hack to get it to read table 2 as title
+
+3.4.4
+15
+System font configuration for XeTEX and LuaTEX
+XeTEX and LuaTEX can use any font installed on the system, not just those in the TEX trees. They do
+these via related but not identical methods.
+On Windows, fonts shipped with TEX Live are made available to XeTEX automatically. But if you
+have installed the xetex package on a Unix-compatible system, you need to configure your system to
+be able to find the fonts shipped with TEX Live via system name lookup, and not just filename lookup.
+To facilitate this, when the xetex package is installed (either at initial installation or later), the
+necessary configuration file is created in TEXMFSYSVAR/fonts/conf/texlive-fontconfig.conf.
+To set up the TEX Live fonts for system-wide use (assuming you have suitable privileges), proceed
+as follows:
+1. Copy the texlive-fontconfig.conf file to /etc/fonts/conf.d/09-texlive.conf.
+2. Run fc-cache -fsv.
+If you do not have sufficient privileges to carry out the steps above, or if you simply want to make
+the TEX Live fonts available to one user, you can do the following:
+1. Copy the texlive-fontconfig.conf file to ~/.fonts.conf, where ~ is your home directory.
+2. Run fc-cache -fv.
+You can run fc-list to see the names of the system fonts. The incantation fc-list : family
+style file spacing (all arguments are literal strings) shows generally interesting information.
