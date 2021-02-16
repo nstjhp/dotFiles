@@ -3,6 +3,7 @@
 ## Change prompt and set digits
 ## options(prompt="R> ", digits=4, show.signif.stars=FALSE)
 options(prompt="R> ")
+options(continue = " ")
 options(max.print=1000)
 options(error=utils::recover)
 ## http://stackoverflow.com/a/1173161/3275826
