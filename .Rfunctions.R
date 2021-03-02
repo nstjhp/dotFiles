@@ -252,5 +252,27 @@
     rlang::set_names(names)
 }
 
+.env$proxy = function(onoff) {
+  stopifnot("Arg must be either 'on' or 'off'"=onoff %in% c("on", "off"))
+  if (onoff == "on") {
+    ## Set up proxy
+    Sys.setenv(
+      http_proxy = paste0("http://", Sys.getenv("hug_proxy_login"), "@", Sys.getenv("hug_proxy")),
+      http_proxy_user = Sys.getenv("hug_proxy_login"),
+      https_proxy = paste0("http://", Sys.getenv("hug_proxy_login"), "@", Sys.getenv("hug_proxy")),
+      https_proxy_user = Sys.getenv("hug_proxy_login"),
+      ftp_proxy_user = paste0("http://", Sys.getenv("hug_proxy_login"), "@", Sys.getenv("hug_proxy"))
+    )
+  } else{
+    # remove proxy
+    Sys.setenv(
+      http_proxy = "",
+      http_proxy_user = "",
+      https_proxy = "",
+      https_proxy_user = "",
+      ftp_proxy_user = ""
+    )
+  }
+}
 ## Attach all the variables above
 attach(.env)
