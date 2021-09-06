@@ -5,6 +5,7 @@
 options(prompt="R> ")
 options(continue = " ")
 options(max.print=1000)
+options(nwarnings = 100) # controls max number of warnings printed with warnings()
 options(error=utils::recover)
 ## http://stackoverflow.com/a/1173161/3275826
 ## ws <- function(howWide=Sys.getenv("COLUMNS")) {
