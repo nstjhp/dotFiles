@@ -125,6 +125,7 @@ alias la='ls'
 alias sl='ls'
 ##export PS1='\[\e[1;37m\][\u@\h \W]\[\e[1;31m\] \[\e[m\]'
 export PS1='\[\e[1;37m\][\u@\h \W]\[\e[1;31m\]尼可\[\e[m\] ' #correctly escaped things between square brackets so line wrapping now works
+export PS1='\[\e[1;32m\]\u@\h \[\033[01;36m\]\W \[\e[1;33m\]尼可\[\e[m\] ' #avoid the red name, change colours
 alias gst='git status'
 alias R='R -q'
 alias bc='bc -l'
