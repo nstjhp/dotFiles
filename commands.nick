@@ -445,3 +445,7 @@ the TEX Live fonts available to one user, you can do the following:
 2. Run fc-cache -fv.
 You can run fc-list to see the names of the system fonts. The incantation fc-list : family
 style file spacing (all arguments are literal strings) shows generally interesting information.
+
+# convert jpgs to pdf in case of imagemagick problems
+# the ^T changes the orientation
+img2pdf  --pagesize A4^T --out myfile.pdf  f1.jpeg f2.JPG f3.JPG f4.jpeg
