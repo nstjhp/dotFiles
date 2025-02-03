@@ -449,3 +449,12 @@ style file spacing (all arguments are literal strings) shows generally interesti
 # convert jpgs to pdf in case of imagemagick problems
 # the ^T changes the orientation
 img2pdf  --pagesize A4^T --out myfile.pdf  f1.jpeg f2.JPG f3.JPG f4.jpeg
+
+# When you need to combine various pages of a weird-sized PDF onto 1 A4 page AKA tiling, or a montage
+# There was a lot of pain installing this, particularly requiring the obsolete everyshi latex pkg. Firstly ensure you have pdfjam
+sudo apt install texlive-latex-extra
+in /usr/local/share/texmf/everyshi do sudo latex everyshi.ins from extracted contents from CTAN
+then copy .sty files to ~/.TinyTeX/texmf-local/tex/latex/local and run texhash ~/.TinyTeX/texmf-local/
+could also try sudo mktexlsr
+finally try kpsewhich everyshi.sty from Downloads or wherever, before
+pdfjam --nup 1x3 --no-landscape --a4paper infile.pdf --outfile 2025-01-Statement.pdf
